@@ -7,7 +7,7 @@ from decrypt import decrypt
 from send_email import send_file_via_email
 
 logging.basicConfig(filename='log/app.log', level=logging.DEBUG,
-    format='%(asctime)-15s %(message)s')
+    format='%(asctime)-15s %(name)s.py <%(funcName)s> %(message)s')
 
 with open('data/e2432/data.txt') as fp:
     data = fp.read()
