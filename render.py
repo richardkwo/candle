@@ -1,5 +1,7 @@
 #-*-coding:utf-8-*-
 
+import subprocess
+import envoy
 import pystache as mustache
 
 templates = {
@@ -48,7 +50,8 @@ templates = {
     ''',
 
     'title': u'''
-        <h2>{{title}}</h2>
+        <a href="#{{toc_anchor}}"></a>
+        <h2 id="{{toc_anchor}}">{{title}}</h2>
         <h4>
             {{author}}
             {{#translator}} | {{translator}} 译{{/translator}}
@@ -57,12 +60,14 @@ templates = {
     ''',
 
     'headline': u'''
-        <h3 class="{{classes}}">{{text}}</h3>
+        <a href="#{{toc_anchor}}"></a>
+        <h3 id="{{toc_anchor}}" class="{{classes}}">{{text}}</h3>
     ''',
 
     'paragraph': u'''
         <p class="{{classes}}">{{text}}</p>
     ''',
+
     'illus': u'''
         <p class="p_align_center">
             <img class="{{classes}}" src="{{image}}" />
@@ -71,6 +76,55 @@ templates = {
 
     'breaker': u'''
         <mbp:pagebreak/>
+    ''',
+
+    'toc.ncx': u'''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="zh-CN">
+            <head>
+                <meta name="dtb:depth" content="4" />
+                <meta name="dtb:totalPageCount" content="0" />
+                <meta name="dtb:maxPageNumber" content="0" />
+            </head>
+            <docTitle><text>{{ title }}</text></docTitle>
+            <docAuthor><text></text></docAuthor>
+            <navMap>
+                <navPoint class="book">
+                    <navLabel><text>{{ title }}</text></navLabel>
+                    <content src="content.html" />
+                    {{#contents}}
+                        <navPoint class="chapter" id="{{ anchor }}" playOrder="{{ anchor }}">
+                            <navLabel><text>{{ title }}</text></navLabel>
+                            <content src="content.html#{{ anchor }}" />
+                        </navPoint>
+                    {{/contents}}
+                </navPoint>
+            </navMap>
+        </ncx>
+    ''',
+
+    'opf': u'''
+        <?xml version="1.0" encoding="utf-8"?>
+        <package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="uid">
+            <metadata>
+                <dc-metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+                    <dc:title>{{ title }}</dc:title>
+                    <dc:language>zh-CN</dc:language>
+                    <dc:creator>wong2</dc:creator>
+                    <dc:publisher>wong2</dc:publisher>
+                    <dc:subject>{{ title }}</dc:subject>
+                    <dc:date>2013-04-05T06:07:08</dc:date>
+                    <dc:description></dc:description>
+                </dc-metadata>
+            </metadata>
+            <manifest>
+                <item id="content" media-type="application/xhtml+xml" href="content.html"></item>
+                <item id="toc" media-type="application/x-dtbncx+xml" href="toc.ncx"></item>
+            </manifest>
+            <spine toc="toc">
+                <itemref idref="content"/>
+            </spine>
+        </package>
     '''
 }
 
@@ -79,22 +133,83 @@ def render(template_name, data):
     return mustache.render(templates[template_name], data)
 
 
-# generate html from json data
-def render_html(data):
-    # has_formula = data['hasFormula']
-    posts = data['posts']
-    body = '<mbp:pagebreak/>'.join(map(render_post, posts))
-    return templates['head'] + body + templates['footer']
+table_of_contents = []
+book_index = 0
+
+def add_to_table_of_contens(title):
+    if len(table_of_contents) <= book_index:
+        table_of_contents.append([])
+    anchor = 'toc_%s_%s' % (len(table_of_contents), len(table_of_contents[-1])+1)
+    table_of_contents[-1].append({
+        'title': title,
+        'anchor': anchor
+    })
+    return anchor
 
 
-def render_title(post):
-    return render('title', {
-        'title': post['title'],
-        'author': post['orig_author'],
-        'translator': post['translator']
+# ------------
+
+def generate_book(book_id, book_title, content_json_data):
+    book_title = book_title.decode('utf-8')
+    content_html = render_html(content_json_data)
+    with open('data/%s/content.html' % book_id, 'w') as fp:
+        fp.write(content_html.encode('utf-8'))
+    toc_xml = render_toc(book_title)
+    with open('data/%s/toc.ncx' % book_id, 'w') as fp:
+        fp.write(toc_xml.encode('utf-8'))
+    opf_xml = render_opf(book_title)
+    with open('data/%s/book.opf' % book_id, 'w') as fp:
+        fp.write(opf_xml.encode('utf-8'))
+
+    # kindlegen
+    r = envoy.run('kindlegen -o %s.mobi data/%s/book.opf' % (book_id, book_id))
+    if r.status_code != 1:
+        raise RuntimeError(r)
+    return 'data/%s/%s.mobi' % (book_id, book_id)
+
+
+def render_opf(book_title):
+    return render('opf', {'title': book_title})
+
+
+def render_toc(book_title):
+    if len(table_of_contents) > 1:
+        toc_s = [tocs[0] for tocs in table_of_contents]
+    else:
+        toc_s = table_of_contents[0]
+    return render('toc.ncx', {
+        'title': book_title,
+        'contents': toc_s
     })
 
 
+# generate html from json data
+def render_html(data):
+    body = '<mbp:pagebreak/>'.join(map(render_post, data['posts']))
+    return templates['head'] + body + templates['footer']
+
+
+# a post is an article
+def render_post(post):
+    html = ''
+    html += render_title(post)
+    html += ''.join(map(render_content, post['contents']))
+    return html
+
+
+def render_title(post):
+    toc_anchor = add_to_table_of_contens(post['title'])
+    global book_index
+    book_index += 1
+    return render('title', {
+        'title': post['title'],
+        'author': post['orig_author'],
+        'translator': post['translator'],
+        'toc_anchor': toc_anchor
+    })
+
+
+# 一个段落等
 def render_content(content):
     classes = []
     content_type, data = content['type'], content['data']
@@ -112,26 +227,19 @@ def render_content(content):
 
     text = data.get('text')
 
+    render_data = {
+        'text': text,
+        'classes': ' '.join(classes)
+    }
+
     # image
     if content_type == 'illus':
-        image = data['size']['medium']['src']
-    else:
-        image = ''
+        render_data['image'] = data['size']['medium']['src']
 
-    return render(content_type, {
-        'text': text,
-        'image': image,
-        'classes': ' '.join(classes)
-    })
+    if content_type == 'headline':
+        render_data['toc_anchor'] = add_to_table_of_contens(text)
 
-
-# a post is an article
-def render_post(post):
-    html = ''
-    html += render_title(post)
-    for content in post['contents']:
-        html += render_content(content)
-    return html
+    return render(content_type, render_data)
 
 
 if __name__ == '__main__':
