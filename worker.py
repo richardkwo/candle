@@ -7,11 +7,10 @@ from render import generate_book
 from decrypt import decrypt
 from send_email import send_file_via_email
 
-logger = logging.getLogger(__name__)
-
 logging.basicConfig(filename='log/app.log', level=logging.DEBUG,
     format='%(asctime)-15s %(name)s.py <%(funcName)s> %(message)s')
 
+logger = logging.getLogger(__name__)
 
 def parse_book_data(book_data_str):
     tmp = book_data_str.split(':')
