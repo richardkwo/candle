@@ -152,7 +152,6 @@ def add_to_table_of_contens(title):
 # ------------
 
 def generate_book(book_id, book_title, content_json_data):
-    book_title = book_title.decode('utf-8')
     logger.info('going to render content.html')
     content_html = render_html(content_json_data)
     logger.info('content.html rendered')

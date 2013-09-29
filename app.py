@@ -6,7 +6,7 @@ from redis import Redis
 from worker import send_book_to_kindle
 
 redis_conn = Redis()
-q = Queue(connection=redis_conn)
+q = Queue(connection=redis_conn, async=True)
 
 app = Flask(__name__)
 
