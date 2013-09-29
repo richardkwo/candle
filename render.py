@@ -1,8 +1,10 @@
 #-*-coding:utf-8-*-
 
-import subprocess
+import logging
 import envoy
 import pystache as mustache
+
+logger = logging.getLogger(__name__)
 
 templates = {
     'head': u'''
@@ -151,7 +153,9 @@ def add_to_table_of_contens(title):
 
 def generate_book(book_id, book_title, content_json_data):
     book_title = book_title.decode('utf-8')
+    logger.info('going to render content.html')
     content_html = render_html(content_json_data)
+    logger.info('content.html rendered')
     with open('data/%s/content.html' % book_id, 'w') as fp:
         fp.write(content_html.encode('utf-8'))
     toc_xml = render_toc(book_title)
@@ -160,11 +164,15 @@ def generate_book(book_id, book_title, content_json_data):
     opf_xml = render_opf(book_title)
     with open('data/%s/book.opf' % book_id, 'w') as fp:
         fp.write(opf_xml.encode('utf-8'))
+    logger.info('book files prepared for %s', book_id)
 
     # kindlegen
+    logger.info('before run kindlegen for %s', book_id)
     r = envoy.run('kindlegen -o %s.mobi data/%s/book.opf' % (book_id, book_id))
     if r.status_code != 1:
+        logging.error('generate book error: %s', r.std_out, exc_info=True)
         raise RuntimeError(r)
+    logger.info('mobi file generated to data/%s/%s.mobi', book_id, book_id)
     return 'data/%s/%s.mobi' % (book_id, book_id)
 
 
