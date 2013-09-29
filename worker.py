@@ -10,7 +10,7 @@ logging.basicConfig(filename='log/app.log', level=logging.DEBUG,
     format='%(asctime)-15s %(name)s.py <%(funcName)s> %(message)s')
 
 
-def send_book_to_kindle(book_id, to_email):
+def send_book_to_kindle(book_id, book_data, to_email):
     with open('data/%s/data.txt' % book_id) as fp:
         data = fp.read()
 
@@ -25,4 +25,4 @@ def send_book_to_kindle(book_id, to_email):
 
 
 if __name__ == '__main__':
-    send_book_to_kindle('e2432', 'wonderfuly@kindle.cn')
+    send_book_to_kindle('e2432', '', 'wonderfuly@kindle.cn')
