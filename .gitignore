@@ -39,3 +39,5 @@ data/*
 local_config.py
 log
 test
+dump.rdb
+!decrypt.pyc
