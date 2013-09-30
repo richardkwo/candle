@@ -37,8 +37,9 @@ nosetests.xml
 
 data/*
 local_config.py
-log
+log/*
 test
 dump.rdb
 !decrypt.pyc
 !data/README.md
+!log/README.md
