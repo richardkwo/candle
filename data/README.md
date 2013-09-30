@@ -6,4 +6,4 @@
         - toc.ncx
         - content.html
         - data.txt
-        - e21234.mobi
+        - e1234.mobi
