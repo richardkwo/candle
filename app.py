@@ -3,7 +3,7 @@
 from flask import Flask, request
 from rq import Queue
 from redis import Redis
-from worker import send_book_to_kindle
+from task import send_book_to_kindle
 
 redis_conn = Redis()
 q = Queue(connection=redis_conn, async=True)
