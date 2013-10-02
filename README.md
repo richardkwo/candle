@@ -1,4 +1,4 @@
-![candle](http://img3.douban.com/view/photo/photo/public/p2152409025.jpg)
+![candle](http://ww3.sinaimg.cn/large/621fcd11jw1e977x99yb2j20jf0cqjs6.jpg)
 
 ## 豆瓣阅读推送到Kindle
 
