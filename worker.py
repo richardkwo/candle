@@ -4,6 +4,7 @@ import os
 import json
 import logging
 import logging.config
+from hashlib import md5
 from render import generate_book
 from decrypt import decrypt
 from send_email import send_file_via_email
@@ -55,8 +56,9 @@ def send_book_to_kindle(book_id, book_data_str, to_email):
     # 是不是不需要新生成
     if not book_data['is_sample'] and os.path.exists(book_mobi_path):
         with open('%s/data.txt' % book_dir) as fp:
-            old_book_data_str = fp.read().decode('utf-8')
-        if old_book_data_str == book_data_str:
+            old_book_data_str = fp.read()
+        old_book_content_md5 = old_book_data_str.split(':', 2)[0]
+        if md5(book_data['encrypted_content']).hexdigest() == old_book_content_md5:
             need_generate = False
 
     logger.info('book %s need generate? : %s', book_id, need_generate)
@@ -65,7 +67,8 @@ def send_book_to_kindle(book_id, book_data_str, to_email):
         if not os.path.isdir(book_dir):
             os.mkdir(book_dir)
         with open('%s/data.txt' % book_dir, 'w') as fp:
-            fp.write(book_data_str.encode('utf-8'))
+            fp.write(md5(book_data['encrypted_content']).hexdigest() + ':' + book_data_str.encode('utf-8'))
+        logger.info('decrypting %s', book_id)
         book_content_data_str = decrypt(book_data['encrypted_content'])
         book_content_data = json.loads(book_content_data_str)
         logger.info('decrypt successful for %s', book_id)
