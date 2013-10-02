@@ -63,19 +63,15 @@ function send(book_id, book_data, callback) {
         return;
     }
 
-    var post_data = {
-        book_id: book_id,
+	$.post(server, {
+        book_id: 'e' + book_id,
         book_data: book_data,
         to_email: to_email
-    };
-
-    console.log(post_data);
-
-    setTimeout(function(){
+    })
+    .done(function(){
         callback({success:true});
-    }, 5000);
-
-    return;
-	$.post(server, post_data, function(data){
+    })
+    .fail(function(){
+        callback({success:false});
     });
 }
