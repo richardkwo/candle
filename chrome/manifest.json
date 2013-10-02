@@ -1,0 +1,29 @@
+{
+    "name": "豆瓣阅读推送到Kindle",
+    "version": "1.0.0",
+    "description": "推送豆瓣阅读的电子书到你的Kindle上",
+    "manifest_version": 2,
+    "icons": {
+        "48": "images/icon48.png"
+    },
+    "background": {
+        "scripts": ["scripts/jquery.min.js", "scripts/event_page.js"],
+        "persistent": false
+    },
+    "page_action": {
+        "default_icon": {
+            "19": "images/icon19.png"
+        },
+        "default_title": "豆瓣阅读推送到Kindle"
+    },
+    "content_scripts": [{
+        "matches": ["http://read.douban.com/reader/ebook/*"],
+        "js": ["scripts/jquery.min.js", "scripts/content.js"],
+        "run_at": "document_end"
+    }],
+    "options_page": "options.html",
+    "permissions": [
+        "<all_urls>",
+        "tabs"
+    ]
+}
