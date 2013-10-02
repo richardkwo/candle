@@ -76,6 +76,10 @@ templates = {
         </p>
     ''',
 
+    'code': u'''
+        <code class="{{classes}}">{{text}}</code>
+    ''',
+
     'breaker': u'''
         <mbp:pagebreak/>
     ''',
@@ -241,7 +245,7 @@ def render_content(content):
 
     # image
     if content_type == 'illus':
-        render_data['image'] = data['size']['medium']['src']
+        render_data['image'] = data['size']['orig']['src']
 
     if content_type == 'headline':
         render_data['toc_anchor'] = add_to_table_of_contens(text)
