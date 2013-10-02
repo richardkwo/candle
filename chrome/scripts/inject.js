@@ -36,6 +36,20 @@ function get_current_book_data(callback) {
     }
 }
 
+function show_result_tip(success) {
+    var html = '<div id="send-to-kindle-result">' +
+        (success ? '<p>发送成功！</p><p class="content">请等待它出现在你的Kindle中</p>' :
+                   '<p>发送失败。</p><p class="content">请稍后重试</p>') +
+        '</div>';
+
+    var el = $(html).hide().appendTo('body').fadeIn(1000);
+    setTimeout(function(){
+        el.fadeOut(2000, function(){
+            el.remove();
+        });
+    }, 3000);
+}
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.call == "get_current_book_data") {
         get_current_book_data(function(book_id, book_data){
@@ -44,6 +58,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 book_data: book_data
             });
         });
+    } else if (request.call == 'show_result_tip') {
+        show_result_tip(request.success);
     }
     return true;
 });

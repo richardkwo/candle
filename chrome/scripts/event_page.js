@@ -12,6 +12,20 @@ function open_option_page() {
     chrome.tabs.create({ url: 'options.html' });
 }
 
+function set_icon(tab_id, icon) {
+    chrome.pageAction.setIcon({
+        tabId: tab_id,
+        path: 'images/' + icon
+    });
+}
+
+function flash_icon(tab_id) {
+    var i = 0;
+    return setInterval(function(){
+        set_icon(tab_id, i++ % 2 ? 'icon19.png':'icon19_2.png');
+    }, 600);
+}
+
 // when clicked
 chrome.pageAction.onClicked.addListener(function(tab) {
     // config if haven't
@@ -20,11 +34,25 @@ chrome.pageAction.onClicked.addListener(function(tab) {
         return;
     }
 
-	chrome.tabs.sendMessage(tab.id, {'call': 'get_current_book_data'}, function(response) {
-	    send(response.book_id, response.book_data, function(){
+    // loading icon
+    var timeout = flash_icon(tab.id);
+
+    var send_data = {call: 'get_current_book_data'};
+	chrome.tabs.sendMessage(tab.id, send_data, function(response) {
+	    send(response.book_id, response.book_data, function(data){
+            clearInterval(timeout);
+            set_icon(tab.id, 'icon19.png');
+            show_result(tab.id, data);
         });
   	});
 });
+
+function show_result(tab_id, data) {
+	chrome.tabs.sendMessage(tab_id, {
+        call: 'show_result_tip',
+        success: data.success
+    }, function(){});
+}
 
 function send(book_id, book_data, callback) {
     var to_email = localStorage.to_email,
@@ -42,8 +70,12 @@ function send(book_id, book_data, callback) {
     };
 
     console.log(post_data);
-    return;
 
+    setTimeout(function(){
+        callback({success:true});
+    }, 5000);
+
+    return;
 	$.post(server, post_data, function(data){
     });
 }

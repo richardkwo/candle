@@ -18,7 +18,8 @@
     },
     "content_scripts": [{
         "matches": ["http://read.douban.com/reader/ebook/*"],
-        "js": ["scripts/jquery.min.js", "scripts/content.js"],
+        "js": ["scripts/jquery.min.js", "scripts/inject.js"],
+        "css": ["css/inject.css"],
         "run_at": "document_end"
     }],
     "options_page": "options.html",
