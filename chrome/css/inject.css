@@ -1,0 +1,11 @@
+#send-to-kindle-result {
+	position: absolute;
+	top: 50px;
+	right: 50px;
+	background-color: #f6f4ec;
+	padding: 20px;
+}
+
+#send-to-kindle-result .content {
+	margin-top: 10px;
+}
