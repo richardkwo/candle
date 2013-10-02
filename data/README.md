@@ -5,5 +5,5 @@
         - book.opf
         - toc.ncx
         - content.html
-        - data.txt
+        - data.txt 加密内容的md5:原始数据
         - e1234.mobi
