@@ -25,7 +25,7 @@
 ### 注意
 
 * 千万不要忘记去`Kindle个人文档设置`[amazon.cn上](https://www.amazon.cn/gp/digital/fiona/manage?ie=UTF8&ref_=gno_yam_myk#pdocSettings)
-[amazon.com上](https://www.amazon.com/gp/digital/fiona/manage?ie=UTF8&ref_=gno_yam_myk#pdocSettings)把使用的发送邮箱加入白名单
+/[amazon.com上](https://www.amazon.com/gp/digital/fiona/manage?ie=UTF8&ref_=gno_yam_myk#pdocSettings)把使用的发送邮箱加入白名单
 
 ### 捐助
 
