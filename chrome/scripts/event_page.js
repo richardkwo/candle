@@ -38,17 +38,17 @@ chrome.pageAction.onClicked.addListener(function(tab) {
     var timeout = flash_icon(tab.id);
 
     var send_data = {call: 'get_current_book_data'};
-	chrome.tabs.sendMessage(tab.id, send_data, function(response) {
-	    send(response.book_id, response.book_data, function(data){
+    chrome.tabs.sendMessage(tab.id, send_data, function(response) {
+        send(response.book_id, response.book_data, function(data) {
             clearInterval(timeout);
             set_icon(tab.id, 'icon19.png');
             show_result(tab.id, data);
         });
-  	});
+    });
 });
 
 function show_result(tab_id, data) {
-	chrome.tabs.sendMessage(tab_id, {
+    chrome.tabs.sendMessage(tab_id, {
         call: 'show_result_tip',
         success: data.success
     }, function(){});
@@ -63,7 +63,7 @@ function send(book_id, book_data, callback) {
         return;
     }
 
-	$.post(server, {
+    $.post(server, {
         book_id: 'e' + book_id,
         book_data: book_data,
         to_email: to_email
