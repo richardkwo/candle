@@ -4,10 +4,15 @@ import os
 import json
 import logging
 import logging.config
+from rq import Queue
+from redis import Redis
 from hashlib import md5
 from render import generate_book
 from decrypt import decrypt
 from send_email import send_file_via_email
+
+
+send_queue = Queue('send_mail', connection=Redis())
 
 
 logging.config.dictConfig({
@@ -47,7 +52,7 @@ def parse_book_data(book_data_str):
     return data
 
 
-def send_book_to_kindle(book_id, book_data_str, to_email):
+def send_to_kindle(book_id, book_data_str, to_email):
     need_generate = True
     book_dir = 'data/%s' % book_id
     book_mobi_path = '%s/%s.mobi' % (book_dir, book_id)
@@ -79,10 +84,10 @@ def send_book_to_kindle(book_id, book_data_str, to_email):
             book_mobi_path = None
 
     if book_mobi_path:
-        send_file_via_email(to_email, book_mobi_path)
+        send_queue.enqueue(send_file_via_email, to_email, book_mobi_path)
 
 
 if __name__ == '__main__':
     with open('data/e2432/data.txt') as fp:
         book_data_str = fp.read()
-    send_book_to_kindle('e2432', book_data_str, 'wonderfuly@kindle.cn')
+    send_to_kindle('e2432', book_data_str, 'wonderfuly@kindle.cn')

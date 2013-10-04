@@ -3,10 +3,9 @@
 from flask import Flask, request
 from rq import Queue
 from redis import Redis
-from task import send_book_to_kindle
+from task import send_to_kindle
 
-redis_conn = Redis()
-q = Queue(connection=redis_conn, async=True)
+q = Queue('gen_book', connection=Redis())
 
 app = Flask(__name__)
 
@@ -19,7 +18,7 @@ def send():
     book_id = request.form['book_id']
     book_data = request.form['book_data']
     to_email = request.form['to_email']
-    q.enqueue(send_book_to_kindle, book_id, book_data, to_email)
+    q.enqueue(send_to_kindle, book_id, book_data, to_email)
     return 'ok'
 
 
