@@ -40,7 +40,8 @@ local_config.py
 log/*
 test
 dump.rdb
-decrypt.py
-!decrypt.pyc
 !data/README.md
 !log/README.md
+!decrypt/*.so
+decrypt/decrypt.pyx
+decrypt/setup.py
