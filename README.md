@@ -19,7 +19,7 @@
 ### 浏览器端
 
 * 目前只有Chrome扩展
-* 在[这里](https://chrome.google.com/webstore/detail/pkllkfgpblpkicecpbmkbkcjmdhemhdl)安装Chrome扩展，在设置页面设置好服务器地址(可以用我的服务地址：http://read.doubanfm.me/send)和你的Kindle邮箱
+* 在[这里](https://chrome.google.com/webstore/detail/pkllkfgpblpkicecpbmkbkcjmdhemhdl)安装Chrome扩展，在设置页面设置好服务器地址(可以用我的服务地址：http://read.doubanfm.me/send )和你的Kindle邮箱
 * 在豆瓣阅读电子书阅读页面，点击地址栏里的`K`图标即可发送当前电子书到Kindle
 
 ### 注意
