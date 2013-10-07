@@ -45,3 +45,4 @@ dump.rdb
 !decrypt/*.so
 decrypt/decrypt.pyx
 decrypt/setup.py
+decrypt/build.sh
