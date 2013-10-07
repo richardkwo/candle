@@ -1,6 +1,6 @@
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    var douban_read_url_regex  = /http:\/\/read.douban.com\/reader\/ebook\//;
+    var douban_read_url_regex  = /read.douban.com\/reader\/ebook\//;
     if (changeInfo.status == 'complete') {
         if (douban_read_url_regex.test(tab.url)) {
             chrome.pageAction.show(tabId);
