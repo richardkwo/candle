@@ -1,6 +1,7 @@
 #-*-coding:utf-8-*-
 
 import logging
+import itertools
 import envoy
 import pystache as mustache
 
@@ -184,10 +185,14 @@ def render_opf(book_title):
 
 
 def render_toc(book_title):
-    if len(table_of_contents) > 1:
-        toc_s = [tocs[0] for tocs in table_of_contents]
+    toc_length = len(table_of_contents)
+    if toc_length == 1:
+        toc_s = table_of_contents
+    elif toc_length == 2:
+        toc_s = table_of_contents[1]
     else:
-        toc_s = table_of_contents[0]
+        toc_s = list(itertools.chain.from_iterable(table_of_contents))
+
     return render('toc.ncx', {
         'title': book_title,
         'contents': toc_s
@@ -254,8 +259,12 @@ def render_content(content):
 
 
 if __name__ == '__main__':
-    with open('data/data.json') as fp:
-        json_str = fp.read()
-        import json
-        data = json.loads(json_str)
-        print render_html(data).encode('utf-8')
+    import json
+    from decrypt import decrypt
+    book_id = 'e1531222'
+    with open('data/' + book_id + '/data.txt') as fp:
+        file_content = fp.read()
+    _, title, content = file_content.split(':')[:3]
+    json_str = decrypt(content)
+    data = json.loads(json_str)
+    generate_book(book_id, title.decode('utf-8'), data)
