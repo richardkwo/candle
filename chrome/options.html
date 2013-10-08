@@ -52,11 +52,17 @@
                     <ul>
                         <li>
                             <label for="server">服务器地址：</label>
-                            <input type="text" id="server" placeholder="输入服务器地址" />
+                            <input type="text" id="server" placeholder="输入服务器地址" style="width:250px" />
                         </li>
                         <li style="margin-top:10px">
                             <label for="to_email">Kindle邮箱：</label>
-                            <input type="text" id="to_email" placeholder="输入你的Kindle邮箱" />
+                            <input type="text" id="kindle-email-name" placeholder="你的Kindle邮箱" style="width:100px" />
+                            <span>@</span>
+                            <select style="width:131px" id="kindle-email-domain">
+                                <option value="free.kindle.com" selected="selected">free.kindle.com</option>
+                                <option value="kindle.com">kindle.com</option>
+                                <option value="kindle.cn">kindle.cn</option>
+                            </select>
                         </li>
                     </ul>
                 </div>
