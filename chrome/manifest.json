@@ -1,14 +1,13 @@
 {
     "name": "豆瓣阅读推送到Kindle",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "推送豆瓣阅读的电子书到你的Kindle上",
     "manifest_version": 2,
     "icons": {
         "48": "images/icon48.png"
     },
     "background": {
-        "scripts": ["scripts/jquery.min.js", "scripts/event_page.js"],
-        "persistent": false
+        "scripts": ["scripts/jquery.min.js", "scripts/background.js"]
     },
     "page_action": {
         "default_icon": {
