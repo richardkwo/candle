@@ -117,8 +117,8 @@ templates = {
                 <dc-metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
                     <dc:title>{{ title }}</dc:title>
                     <dc:language>zh-CN</dc:language>
-                    <dc:creator>wong2</dc:creator>
-                    <dc:publisher>wong2</dc:publisher>
+                    <dc:creator>豆瓣阅读</dc:creator>
+                    <dc:publisher>豆瓣阅读</dc:publisher>
                     <dc:subject>{{ title }}</dc:subject>
                     <dc:date>2013-04-05T06:07:08</dc:date>
                     <dc:description></dc:description>
