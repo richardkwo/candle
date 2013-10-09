@@ -41,8 +41,8 @@ function fetch_book_data(book_id, callback) {
 
 function get_current_book_data(callback) {
     var book_id = get_book_id();
-    if (book_id in localStorage) {
-        callback(book_id, localStorage[book_id]); 
+    if (('e' + book_id) in localStorage) {
+        callback(book_id, localStorage['e' + book_id]); 
     } else {
         fetch_book_data(book_id, function(book_data) {
             callback(book_id, book_data);
