@@ -5,7 +5,7 @@ function get_book_id() {
 
 function fetch_book_data(book_id, callback) {
     var post_data = {
-        ck: localStorage.ck,
+        ck: $.cookie('ck'),
         aid: book_id,
         reader_data_version: 'v3'
     };
