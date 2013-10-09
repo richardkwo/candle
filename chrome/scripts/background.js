@@ -1,3 +1,8 @@
+try {
+    var port = chrome.extension.connect();
+    port.onDisconnect.addListener(function(){});
+} catch (e) {}
+
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     var douban_read_url_regex  = /read.douban.com\/reader\/ebook\//;

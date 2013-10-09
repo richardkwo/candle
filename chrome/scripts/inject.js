@@ -1,3 +1,17 @@
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.call == "get_current_book_data") {
+        get_current_book_data(function(book_id, book_data){
+            sendResponse({
+                book_id: book_id,
+                book_data: book_data
+            });
+        });
+    } else if (request.call == 'show_result_tip') {
+        show_result_tip(request.success);
+    }
+    return true;
+});
+
 function get_book_id() {
     var matches = location.href.match(/ebook\/(\d+)\//);
     return matches[1];
@@ -49,17 +63,3 @@ function show_result_tip(success) {
         });
     }, 3000);
 }
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.call == "get_current_book_data") {
-        get_current_book_data(function(book_id, book_data){
-            sendResponse({
-                book_id: book_id,
-                book_data: book_data
-            });
-        });
-    } else if (request.call == 'show_result_tip') {
-        show_result_tip(request.success);
-    }
-    return true;
-});
